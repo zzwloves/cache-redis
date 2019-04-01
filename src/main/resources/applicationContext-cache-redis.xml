@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+	
+	<context:component-scan base-package="io.vicp.wloves.cache.redis.service" />
+	
+	<!-- Redis 连接池 -->
+    <bean id="redisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="minIdle" value="${redisPool.minIdle}"/>
+        <!-- 最大能够保持idel状态的对象数-->
+        <property name="maxIdle" value="${redisPool.maxIdle}"/>
+        <!-- 最大分配的对象数 -->
+        <property name="maxTotal" value="${redisPool.maxTotal}"/>
+        <!-- 当池内没有返回对象时，最大等待时间 -->
+        <property name="maxWaitMillis" value="${redisPool.maxWaitMillis}"/>
+        <!-- 当调用borrow Object方法时，是否进行有效性检查 -->
+        <property name="testOnBorrow" value="true"/>
+        <!--<property name="testOnReturn" value="true"/>-->
+    </bean>
+    
+    <!-- Redis 连接工厂 -->
+    <bean id="businessConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+          destroy-method="destroy">
+        <property name="hostName" value="${redis.host}"/>
+        <property name="port" value="${redis.port}"/>
+        <property name="database" value="${redis.dbindex}"/>
+        <property name="poolConfig" ref="redisPoolConfig"/>
+        <property name="usePool" value="true"/>
+        <property name="password" value="${redis.password}"/>
+    </bean>
+    
+    <!--针对String的序列化工具-->
+    <bean id="stringRedisSerializer" name="stringRedisSerializer"
+          class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+
+    <bean id="jdkSerializationRedisSerializer" name="jdkSerializationRedisSerializer"
+          class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"/>
+
+    <bean id="businessRedisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="connectionFactory" ref="businessConnectionFactory"/>
+        <property name="keySerializer" ref="stringRedisSerializer"/>
+        <property name="hashKeySerializer" ref="stringRedisSerializer"/>
+        <property name="hashValueSerializer" ref="jdkSerializationRedisSerializer"/>
+        <property name="valueSerializer" ref="jdkSerializationRedisSerializer"/>
+        <property name="stringSerializer" ref="jdkSerializationRedisSerializer"/>
+    </bean>
+
+</beans>

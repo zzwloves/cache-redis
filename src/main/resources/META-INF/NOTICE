@@ -1,0 +1,26 @@
+步骤一：
+  三种使用方式：
+  方式一：在configuration配置类上加上 io.vicp.wloves.cache.redis.annotation.EnableCacheRedis注解
+  方式二：将 io.vicp.wloves.cache.redis包放入到项目的扫描路径中，确保该包下的spring注解能生效
+  方式三：将 classpath下的applicationContext-cache-redis.xml 加载到你的项目中
+
+步骤二：将下面的Redis参数配置参数复制到你项目中的properties类型文件中
+#Redis Config
+#redis数据库ip
+redis.host=*.*.*.*
+#Redis数据库端口
+redis.port=*（方式一、二默认6379，使用方式一、二可不用配置）
+#Redis数据库分库下标
+redis.dbindex=*（方式一、二默认0，使用方式一、二可不用配置）
+#Redis数据库密码
+redis.password=*
+
+#Redis Pool Config
+#最小能够保持idel状态的对象数
+redisPool.minIdle=*（方式一、二默认10，使用方式一、二可不用配置）
+#最大能够保持idel状态的对象数
+redisPool.maxIdle=*（方式一、二默认30，使用方式一、二可不用配置）
+#最大分配的对象数
+redisPool.maxTotal=*（方式一、二默认1024，使用方式一、二可不用配置）
+#当池内没有返回对象时，最大等待时间
+redisPool.maxWaitMillis=*（方式一、二默认3000，使用方式一、二可不用配置）
